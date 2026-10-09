@@ -65,14 +65,15 @@ Ağ tarayıcı başlatıldı. Güvenlik testleri için hazır...
 ## Proje Yapısı
 
 ```text
-esp32-network-scanner/
-├── src/
-│   └── main.cpp          # Ana uygulama (setup + loop)
-├── platformio.ini        # PlatformIO yapılandırması
-├── requirements.txt      # (Boş / yalnızca geliştirme araçları)
-├── README.md
+ESP32-Ag-Tarayici/
+├── include/          # Proje header dosyaları
+├── lib/              # Projeye özgü dosyalar
+├── src/              # Uygulama Kaynak Kodu
+├── test/             # Test dosyaları
+├── .vscode/          # Editör konfigürasyon
 ├── .gitignore
-└── LICENSE
+├── platformio.ini    # PlatformIO konfigürsayon
+└── README.md
 ```
 
 ## Güvenlik ve Sorumlu Kullanım
