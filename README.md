@@ -25,8 +25,8 @@ Bu proje, ESP32 mikrodenetleyicisi üzerinde çalışan, C++ ile geliştirilmiş
 ## Kurulum
 
 ```bash
-git clone https://github.com/USERNAME/esp32-network-scanner.git
-cd esp32-network-scanner
+git clone https://github.com/KadirKayacan/ESP32-Ag-Tarayici.git
+cd ESP32-Ag-Tarayici
 
 # PlatformIO kullanıyorsan:
 pio run --target upload
