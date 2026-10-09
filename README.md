@@ -6,13 +6,12 @@ Bu proje, ESP32 mikrodenetleyicisi üzerinde çalışan, C++ ile geliştirilmiş
 
 ## Özellikler
 
-- Çevredeki tüm Wi-Fi ağlarını (SSID, BSSID/MAC, kanal, RSSI) tarama
-- Açık ve şifreli ağların (WPA/WPA2/WPA3/WEP) ayrımını yapma
-- Seri port üzerinden gerçek zamanlı çıktı ve tarama sonuçlarının listelenmesi
-- Web arayüzü (ESP32 dahili HTTP sunucusu) üzerinden tarama sonuçlarını görüntüleme
-- Belirli bir SSID veya kanal aralığına göre filtreleme
-- Tekrarlı (interval) tarama modu
-- Opsiyonel: SD karta veya SPIFFS'e tarama kayıtlarını (log) yazma
+- Çevredeki tüm Wi-Fi ağlarını SSID, RSSI ve şifreleme türü ile birlikte tarama
+- Açık ağları (WIFI_AUTH_OPEN) otomatik olarak "Açık Ağ (Riskli!)" şeklinde işaretleme
+- Şifreli ağları (WPA/WPA2/WPA3/WEP) tespit etme
+- Seri port (115200 baud) üzerinden gerçek zamanlı, numaralandırılmış çıktı
+- 5 saniyede bir otomatik tekrarlı tarama döngüsü
+- ESP32'yi Station (STA) moduna alıp önceki bağlantıları temizleyerek temiz bir tarama ortamı sağlama
 
 ## Teknolojiler
 
@@ -20,11 +19,8 @@ Bu proje, ESP32 mikrodenetleyicisi üzerinde çalışan, C++ ile geliştirilmiş
 - ESP32 (ESP-WROOM-32 veya benzeri)
 - PlatformIO veya Arduino IDE
 - Kütüphaneler:
-  - `WiFi.h` (ESP32 dahili Wi-Fi kütüphanesi)
-  - `WebServer.h` (ESP32 dahili HTTP sunucusu)
-  - `SPIFFS.h` / `SD.h` (log kayıt için)
-  - `ArduinoJson` (web arayüzü için JSON çıktısı)
-  - `ESPAsyncWebServer` (opsiyonel, daha performanslı web sunucusu)
+  - WiFi.h (ESP32 dahili Wi-Fi kütüphanesi)
+  -  Arduino.h (Temel Arduino fonksiyonları)
 
 ## Kurulum
 
@@ -32,13 +28,13 @@ Bu proje, ESP32 mikrodenetleyicisi üzerinde çalışan, C++ ile geliştirilmiş
 git clone https://github.com/USERNAME/esp32-network-scanner.git
 cd esp32-network-scanner
 
-# PlatformIO kullanıyorsan
-pio run
+# PlatformIO kullanıyorsan:
+pio run --target upload
 
-# Arduino IDE kullanıyorsan
+# Arduino IDE kullanıyorsan:
 # 1. Arduino IDE'yi aç
-# 2. ESP32 board paketini Board Manager'dan kur
-# 3. Gerekli kütüphaneleri Library Manager'dan yükle
+# 2. Board Manager'dan "esp32" paketini kur
+# 3. Karta "ESP32 Dev Module" seç
 # 4. esp32_network_scanner.ino dosyasını aç ve yükle
 ```
 
@@ -52,38 +48,28 @@ pio run --target upload
 pio device monitor -b 115200
 ```
 
-Cihaz açıldıktan sonra seri porttan aşağıdaki komutlar kullanılabilir:
+Cihaz açıldıktan sonra herhangi bir komut girmeye gerek yoktur; kod otomatik olarak 5 saniyede bir tarama yapar. Seri porttan aşağıdaki gibi bir çıktı görürsünüz:
 
 ```text
-scan              # Tek seferlik ağ taraması başlat
-scan --interval 10 # 10 saniyede bir otomatik tarama
-scan --channel 1-6 # Sadece 1-6 kanallarını tara
-scan --open-only  # Sadece açık ağları listele
-list              # Son tarama sonuçlarını göster
-clear             # Ekranı/sonuçları temizle
-help              # Komut listesi
+Ağ tarayıcı başlatıldı. Güvenlik testleri için hazır...
+Çevredeki ağlar taranıyor...
+5 adet ağ tespit edildi:
+1: EvWiFi (-45 dBm) - Şifreli
+2: Cafe_Free (-72 dBm) - Açık Ağ (Riskli!)
+3: Ofis_5G (-58 dBm) - Şifreli
+4: Misafir (-80 dBm) - Açık Ağ (Riskli!)
+5: IoT_Node (-66 dBm) - Şifreli
+----------------------------------------------
 ```
-
-Web arayüzüne erişim için: Cihaz bağlandıktan sonra seri portta yazan IP adresini tarayıcıda açın (ör. `http://192.168.4.1`).
 
 ## Proje Yapısı
 
 ```text
 esp32-network-scanner/
 ├── src/
-│   ├── main.cpp              # Ana uygulama giriş noktası
-│   ├── wifi_scanner.cpp      # Wi-Fi tarama mantığı
-│   ├── wifi_scanner.h
-│   ├── web_server.cpp        # Web arayüzü ve API endpoint'leri
-│   ├── web_server.h
-│   ├── logger.cpp            # SPIFFS/SD log kayıtları
-│   └── logger.h
-├── include/
-│   └── config.h              # Wi-Fi, pin ve sabit tanımları
-├── data/
-│   └── index.html            # Web arayüzü HTML dosyası
-├── platformio.ini            # PlatformIO yapılandırması
-├── requirements.txt          # (Python yardımcı scriptler için)
+│   └── main.cpp          # Ana uygulama (setup + loop)
+├── platformio.ini        # PlatformIO yapılandırması
+├── requirements.txt      # (Boş / yalnızca geliştirme araçları)
 ├── README.md
 ├── .gitignore
 └── LICENSE
